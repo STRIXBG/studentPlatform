@@ -12,7 +12,11 @@ function Post() {
     axios.get(`http://localhost:3001/posts/byId/${id}`).then((response) => {
       setPostObject(response.data);
     });
-  });
+
+    axios.get(`http://localhost:3001/comments/${id}`).then((response) => {
+      setComments(response.data);
+    });
+  }, []);
 
   const addComment = () => {
     axios
@@ -24,7 +28,7 @@ function Post() {
         },
         {
           headers: {
-            accessToken: sessionStorage.getItem("accessToken"),
+            accessToken: localStorage.getItem("accessToken"),
           },
         }
       )
@@ -32,14 +36,17 @@ function Post() {
         if (response.data.error) {
           console.log(response.data.error);
         } else {
-          const commentToAdd = { commentBody: newComment };
+          const commentToAdd = {
+            commentBody: newComment,
+            username: response.data.username,
+          };
           setComments([...comments, commentToAdd]);
           setNewComment("");
         }
       });
   };
 
-return (
+  return (
     <div className="postPage">
       <div className="leftSide">
         <div className="post" id="individual">
@@ -66,6 +73,7 @@ return (
             return (
               <div key={key} className="comment">
                 {comment.commentBody}
+                <label> Username: {comment.username}</label>
               </div>
             );
           })}
