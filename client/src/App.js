@@ -29,6 +29,11 @@ function App() {
       });
   }, []);
 
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    setAuthState({ username: "", id: 0, status: false });
+  };
+
   return (
     <div className="App">
       <AuthContext.Provider value={{ authState, setAuthState }}>
@@ -38,6 +43,10 @@ function App() {
             <Link to="/">Home Page</Link>
             <Link to="/login"> Login</Link>
             <Link to="/register"> Registration</Link>
+          </div>
+          <div className="loggedInContainer">
+            <h1>{authState.username} </h1>
+            {authState.status && <button onClick={logout}> Logout</button>}
           </div>
           <Routes>
             <Route path="/" element={<Home />} />
